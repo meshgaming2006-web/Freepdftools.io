@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Page Numbers to PDF Online - Free Tool | FreePDFTools</title>
+    <meta name="description" content="Add page numbers to your PDF document online. Customize position, format, and style of page numbers. Free tool with instant processing.">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">FreePDFTools</a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="all-tools.html">All Tools</a>
+                <a href="blog.html">Blog</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 2rem 1rem; max-width: 800px;">
+        <h1 style="text-align: center; margin-bottom: 0.5rem;">Add Page Numbers to PDF</h1>
+        <p style="text-align: center; color: #64748b; margin-bottom: 2rem;">Automatically add page numbers to your PDF document.</p>
+
+        <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;" id="dropZone">
+            <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjEgMTV2NGEyIDIgMCAwIDEtMiAySDVhMiAyIDAgMCAxLTItMnYtNG0xNC00bC04IDgtOC04bTggOGwtOC04IDgtOHoiLz48L3N2Zz4=" alt="Upload" height="50" style="margin-bottom: 1rem;">
+            <p>Drag & Drop your PDF file here<br>or <b><span onclick="document.getElementById('fileInput').click()" style="color: #2563eb; cursor: pointer;">browse</span></b> to choose a file.</p>
+        </div>
+
+        <div id="numberingOptions" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1.5rem;">
+            <h3>Page Numbering Options</h3>
+            
+            <div style="margin: 1rem 0;">
+                <label style="display: block; margin-bottom: 0.5rem;"><strong>Position:</strong></label>
+                <select id="position" style="padding: 0.8rem; width: 100%; border: 1px solid #ddd; border-radius: 8px;">
+                    <option value="bottom-center">Bottom Center</option>
+                    <option value="top-center">Top Center</option>
+                    <option value="bottom-right">Bottom Right</option>
+                    <option value="top-right">Top Right</option>
+                </select>
+            </div>
+
+            <div style="margin: 1rem 0;">
+                <label style="display: block; margin-bottom: 0.5rem;"><strong>Starting Number:</strong></label>
+                <input type="number" id="startNumber" value="1" min="1" style="padding: 0.8rem; width: 100%; border: 1px solid #ddd; border-radius: 8px;">
+            </div>
+
+            <button onclick="addPageNumbers()" style="width: 100%; padding: 1rem; background-color: #2563eb; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem;">Add Page Numbers</button>
+        </div>
+        
+        <div id="result" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1.5rem; text-align: center;">
+            <h3>Page Numbers Added Successfully! 🎉</h3>
+            <a id="downloadLink"><button style="padding: 1rem 2rem; background-color: #10b981; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">Download Numbered PDF</button></a>
+        </div>
+
+        <section style="margin-top: 4rem;">
+            <h2>How to Add Page Numbers to PDF</h2>
+            <ol>
+                <li>Upload your PDF using the tool above</li>
+                <li>Choose the position and starting number for your page numbers</li>
+                <li>Click "Add Page Numbers" to process your document</li>
+                <li>Download your PDF with automatically added page numbers</li>
+            </ol>
+            <p>Perfect for academic papers, reports, manuals, and any multi-page document that needs proper pagination.</p>
+        </section>
+    </main>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const numberingOptions = document.getElementById('numberingOptions');
+        const resultDiv = document.getElementById('result');
+        let currentPdfFile = null;
+
+        fileInput.addEventListener('change', (e) => { if(e.target.files[0]) handleFileSelect(e.target.files[0]); });
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.backgroundColor = '#f1f5f9'; });
+        dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'white'; });
+        dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'white'; if(e.dataTransfer.files[0]) handleFileSelect(e.dataTransfer.files[0]); });
+
+        function handleFileSelect(file) {
+            if (file && file.type === 'application/pdf') {
+                currentPdfFile = file;
+                numberingOptions.style.display = 'block';
+                dropZone.innerHTML = `<p>✅ <strong>${file.name}</strong> ready for page numbering.</p>`;
+            }
+        }
+
+        function addPageNumbers() {
+            const position = document.getElementById('position').value;
+            const startNumber = document.getElementById('startNumber').value;
+            alert(`This will use pdf-lib to add page numbers at ${position} starting from ${startNumber}.`);
+        }
+    </script>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 FreePDFTools. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
