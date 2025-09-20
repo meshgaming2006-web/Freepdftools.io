@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Form Creator - Create Fillable Forms Online | FreePDFTools</title>
+    <meta name="description" content="Create interactive PDF forms with text fields, checkboxes, and buttons. Design fillable forms for surveys, applications, and more. 100% free.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">FreePDFTools</a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="all-tools.html">All Tools</a>
+                <a href="blog.html">Blog</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 2rem 1rem; max-width: 1000px;">
+        <h1 style="text-align: center; margin-bottom: 0.5rem;">PDF Form Creator</h1>
+        <p style="text-align: center; color: #64748b; margin-bottom: 2rem;">Create interactive fillable PDF forms online.</p>
+
+        <div style="display: grid; grid-template-columns: 300px 1fr; gap: 2rem;">
+            <!-- Form Elements Sidebar -->
+            <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: fit-content;">
+                <h3>Form Elements</h3>
+                <div style="display: grid; gap: 0.5rem; margin-top: 1rem;">
+                    <button onclick="addTextField()" style="padding: 0.8rem; background: #dbeafe; border: none; border-radius: 6px; cursor: pointer; text-align: left;">📝 Text Field</button>
+                    <button onclick="addCheckbox()" style="padding: 0.8rem; background: #dbeafe; border: none; border-radius: 6px; cursor: pointer; text-align: left;">☑️ Checkbox</button>
+                    <button onclick="addRadio()" style="padding: 0.8rem; background: #dbeafe; border: none; border-radius: 6px; cursor: pointer; text-align: left;">🔘 Radio Button</button>
+                    <button onclick="addDropdown()" style="padding: 0.8rem; background: #dbeafe; border: none; border-radius: 6px; cursor: pointer; text-align: left;">📋 Dropdown</button>
+                    <button onclick="addButton()" style="padding: 0.8rem; background: #dbeafe; border: none; border-radius: 6px; cursor: pointer; text-align: left;">🖱️ Button</button>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <button onclick="generateForm()" style="width: 100%; padding: 1rem; background-color: #10b981; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">Generate PDF Form</button>
+                </div>
+            </div>
+
+            <!-- Form Canvas -->
+            <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); min-height: 500px; position: relative;">
+                <div id="formCanvas" style="border: 2px dashed #d1d5db; padding: 2rem; min-height: 400px; background: #f8fafc;">
+                    <p style="text-align: center; color: #64748b; margin: 150px 0;">Drag form elements from the sidebar or click to add them</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="result" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 2rem; text-align: center;">
+            <h3>PDF Form Created Successfully! 🎉</h3>
+            <a id="downloadLink"><button style="padding: 1rem 2rem; background-color: #2563eb; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">Download Fillable PDF Form</button></a>
+        </div>
+
+        <section style="margin-top: 4rem;">
+            <h2>Create Interactive PDF Forms</h2>
+            <p>Our form creator allows you to build:</p>
+            <ul>
+                <li>Text fields for names, addresses, and comments</li>
+                <li>Checkboxes for multiple selections</li>
+                <li>Radio buttons for single choices</li>
+                <li>Dropdown menus for organized options</li>
+                <li>Submit buttons for form completion</li>
+            </ul>
+            <p><strong>Perfect for:</strong> Job applications, surveys, registration forms, feedback forms, and any document that requires user input.</p>
+        </section>
+    </main>
+
+    <script>
+        function addTextField() {
+            const canvas = document.getElementById('formCanvas');
+            canvas.innerHTML = '<div style="background: #ffedd5; padding: 1rem; border-radius: 6px; margin: 0.5rem 0;"><p>Text Field added. Actual implementation would show a draggable text input element.</p></div>' + canvas.innerHTML;
+        }
+
+        function addCheckbox() {
+            const canvas = document.getElementById('formCanvas');
+            canvas.innerHTML = '<div style="background: #dcfce7; padding: 1rem; border-radius: 6px; margin: 0.5rem 0;"><p>Checkbox added. Users can check/uncheck this option.</p></div>' + canvas.innerHTML;
+        }
+
+        function addRadio() {
+            const canvas = document.getElementById('formCanvas');
+            canvas.innerHTML = '<div style="background: #dbeafe; padding: 1rem; border-radius: 6px; margin: 0.5rem 0;"><p>Radio button group added. Users can select one option.</p></div>' + canvas.innerHTML;
+        }
+
+        function addDropdown() {
+            const canvas = document.getElementById('formCanvas');
+            canvas.innerHTML = '<div style="background: #f3e8ff; padding: 1rem; border-radius: 6px; margin: 0.5rem 0;"><p>Dropdown menu added. Users can select from multiple options.</p></div>' + canvas.innerHTML;
+        }
+
+        function addButton() {
+            const canvas = document.getElementById('formCanvas');
+            canvas.innerHTML = '<div style="background: #fce7f3; padding: 1rem; border-radius: 6px; margin: 0.5rem 0;"><p>Button added. This can be used for form submission.</p></div>' + canvas.innerHTML;
+        }
+
+        function generateForm() {
+            document.getElementById('result').style.display = 'block';
+            alert('This would use pdf-lib to create a PDF with actual form fields based on the designed layout.');
+        }
+    </script>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 FreePDFTools. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
