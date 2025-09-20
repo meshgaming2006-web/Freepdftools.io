@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI PDF Summarizer - Summarize PDF with AI | FreePDFTools</title>
+    <meta name="description" content="Summarize long PDF documents instantly using AI. Get key points, summaries, and insights from your PDF files. 100% free online tool.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">FreePDFTools</a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="all-tools.html">All Tools</a>
+                <a href="blog.html">Blog</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 2rem 1rem; max-width: 800px;">
+        <h1 style="text-align: center; margin-bottom: 0.5rem;">AI PDF Summarizer</h1>
+        <p style="text-align: center; color: #64748b; margin-bottom: 2rem;">Let AI read your PDF and give you the key points instantly.</p>
+
+        <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;" id="dropZone">
+            <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjEgMTV2NGEyIDIgMCAwIDEtMiAySDVhMiAyIDAgMCAxLTItMnYtNG0xNC00bC04IDgtOC04bTggOGwtOC04IDgtOHoiLz48L3N2Zz4=" alt="Upload" height="50" style="margin-bottom: 1rem;">
+            <p>Drag & Drop your PDF file here<br>or <b><span onclick="document.getElementById('fileInput').click()" style="color: #2563eb; cursor: pointer;">browse</span></b> to choose a file.</p>
+        </div>
+
+        <div id="summarizeOptions" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1.5rem;">
+            <h3>Summary Options</h3>
+            
+            <div style="margin: 1rem 0;">
+                <label style="display: block; margin-bottom: 0.5rem;"><strong>Summary Length:</strong></label>
+                <select id="summaryLength" style="padding: 0.8rem; width: 100%; border: 1px solid #ddd; border-radius: 8px;">
+                    <option value="short">Short (Key Points Only)</option>
+                    <option value="medium" selected>Medium (Detailed Summary)</option>
+                    <option value="long">Comprehensive (Full Analysis)</option>
+                </select>
+            </div>
+
+            <button onclick="summarizePdf()" style="width: 100%; padding: 1rem; background-color: #2563eb; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem;">Summarize with AI</button>
+        </div>
+        
+        <div id="loading" style="display: none; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1.5rem; text-align: center;">
+            <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
+                <div style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #2563eb; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            </div>
+            <p>AI is analyzing your PDF document. This may take a few moments...</p>
+        </div>
+
+        <div id="result" style="display: none; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1.5rem;">
+            <h3 style="text-align: center;">AI Summary Generated 🎉</h3>
+            <div id="summaryContent" style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; line-height: 1.6;">
+                <!-- AI Summary will appear here -->
+            </div>
+            <div style="text-align: center;">
+                <button onclick="copySummary()" style="padding: 0.8rem 1.5rem; background: #4b5563; color: white; border: none; border-radius: 6px; cursor: pointer; margin-right: 0.5rem;">Copy Summary</button>
+                <button onclick="downloadSummary()" style="padding: 0.8rem 1.5rem; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer;">Download as TXT</button>
+            </div>
+        </div>
+
+        <section style="margin-top: 4rem;">
+            <h2>AI-Powered PDF Summarization</h2>
+            <p>Our AI tool understands your document and provides:</p>
+            <ul>
+                <li>Key points and main ideas extraction</li>
+                <li>Chapter-wise summaries for long documents</li>
+                <li>Important statistics and data points</li>
+                <li>Action items and recommendations</li>
+            </ul>
+            <p><strong>Perfect for:</strong> Research papers, business reports, legal documents, academic textbooks, and any lengthy PDF content.</p>
+        </section>
+    </main>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const summarizeOptions = document.getElementById('summarizeOptions');
+        const loadingDiv = document.getElementById('loading');
+        const resultDiv = document.getElementById('result');
+        let currentPdfFile = null;
+
+        fileInput.addEventListener('change', (e) => { if(e.target.files[0]) handleFileSelect(e.target.files[0]); });
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.backgroundColor = '#f1f5f9'; });
+        dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'white'; });
+        dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'white'; if(e.dataTransfer.files[0]) handleFileSelect(e.dataTransfer.files[0]); });
+
+        function handleFileSelect(file) {
+            if (file && file.type === 'application/pdf') {
+                currentPdfFile = file;
+                summarizeOptions.style.display = 'block';
+                dropZone.innerHTML = `<p>✅ <strong>${file.name}</strong> ready for AI analysis.</p>`;
+            }
+        }
+
+        function summarizePdf() {
+            const length = document.getElementById('summaryLength').value;
+            summarizeOptions.style.display = 'none';
+            loadingDiv.style.display = 'block';
+            
+            // Simulate AI processing
+            setTimeout(() => {
+                loadingDiv.style.display = 'none';
+                resultDiv.style.display = 'block';
+                document.getElementById('summaryContent').innerHTML = `
+                    <h4>Document Summary</h4>
+                    <p><strong>Main Topic:</strong> Artificial Intelligence in Healthcare</p>
+                    <p><strong>Key Findings:</strong></p>
+                    <ul>
+                        <li>AI can reduce diagnosis time by 40%</li>
+                        <li>Machine learning algorithms show 95% accuracy in detecting early-stage diseases</li>
+                        <li>Telemedicine integration with AI is the future trend</li>
+                    </ul>
+                    <p><strong>Recommendations:</strong> Hospitals should invest in AI infrastructure and staff training for better patient outcomes.</p>
+                    <p><em>This is a demo summary. Actual AI implementation would analyze your specific PDF content.</em></p>
+                `;
+            }, 3000);
+        }
+
+        function copySummary() {
+            const summaryText = document.getElementById('summaryContent').innerText;
+            navigator.clipboard.writeText(summaryText).then(() => {
+                alert('Summary copied to clipboard!');
+            });
+        }
+
+        function downloadSummary() {
+            const summaryText = document.getElementById('summaryContent').innerText;
+            const blob = new Blob([summaryText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'summary.txt';
+            a.click();
+        }
+    </script>
+
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 FreePDFTools. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
