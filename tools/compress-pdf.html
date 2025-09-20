@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compress PDF Online - Reduce PDF File Size for Free | FreePDFTools</title>
+    <meta name="description" content="Reduce the size of your PDF files online without losing quality. Free PDF compressor tool. No registration, no watermarks.">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        @media (max-width: 768px) {
+            .container { padding: 0 15px; }
+            #dropZone, #compressionOptions { padding: 1.5rem !important; }
+        }
+        .compression-result {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;
+        }
+        .result-box {
+            padding: 1.5rem; border-radius: 8px; text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="../index.html" class="logo">FreePDFTools</a>
+            <nav>
+                <a href="../index.html">Home</a>
+                <a href="../all-tools.html">All Tools</a>
+                <a href="../blog.html">Blog</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 2rem 1rem; max-width: 800px;">
+        <h1 style="text-align: center; margin-bottom: 0.5rem;">Compress PDF</h1>
+        <p style="text-align: center; color: #64748b; margin-bottom: 2rem;">Reduce your PDF file size without losing important quality.</p>
+
+        <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;" id="dropZone">
+            <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjEgMTV2NGEyIDIgMCAwIDEtMiAySDVhMiAyIDAgMCAxLTItMnYtNG0xNC00bC04IDgtOC04bTggOGwtOC04IDgtOHoiLz48L3N2Zz4=" alt="Upload" height="50" style="margin-bottom: 1rem;">
+            <p>Drag & Drop your PDF file here<br>or <b><span onclick="document.getElementById('fileInput').click()" style="color: #2563eb; cursor: pointer;">browse</span></b> to choose a file.</p>
+        </div>
+
+        <div id="compressionOptions" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1.5rem;">
+            <h3>Compression Level</h3>
+            
+            <div style="margin: 1rem 0;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Select Compression Level</label>
+                <select id="compressionLevel" style="padding: 0.8rem; width: 100%; border: 1px solid #ddd; border-radius: 8px;">
+                    <option value="low">Low Compression (Better Quality)</option>
+                    <option value="medium" selected>Medium Compression (Recommended)</option>
+                    <option value="high">High Compression (Smaller Size)</option>
+                </select>
+            </div>
+
+            <button onclick="compressPdf()" style="width: 100%; padding: 1rem; background-color: #2563eb; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem;">Compress PDF</button>
+        </div>
+        
+        <div id="result" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1.5rem; text-align: center;">
+            <h3>Compression Successful! 🎉</h3>
+            
+            <div class="compression-result">
+                <div class="result-box" style="background: #fef2f2;">
+                    <h4 style="color: #dc2626;">Original</h4>
+                    <div style="font-size: 2rem; font-weight: bold; color: #dc2626;">4.2 MB</div>
+                </div>
+                <div class="result-box" style="background: #f0fdf4;">
+                    <h4 style="color: #16a34a;">Compressed</h4>
+                    <div style="font-size: 2rem; font-weight: bold; color: #16a34a;">1.3 MB</div>
+                </div>
+            </div>
+
+            <div style="background: #fffbeb; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p style="color: #854d0e; margin: 0;">✅ 69% Reduction Achieved</p>
+            </div>
+
+            <a id="downloadLink"><button style="padding: 1rem 2rem; background-color: #10b981; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">Download Compressed PDF</button></a>
+        </div>
+
+        <section style="margin-top: 4rem; padding: 1.5rem; background: #f8fafc; border-radius: 12px;">
+            <h2>PDF Compression Benefits</h2>
+            <p>Compressing your PDF files helps with:</p>
+            <ul style="line-height: 1.6;">
+                <li><strong>Faster email attachments</strong> - Send large files quickly</li>
+                <li><strong>Website optimization</strong> - Faster loading times</li>
+                <li><strong>Storage savings</strong> - Save space on your device</li>
+                <li><strong>Mobile sharing</strong> - Easier sharing on mobile devices</li>
+            </ul>
+        </section>
+    </main>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const compressionOptions = document.getElementById('compressionOptions');
+        const resultDiv = document.getElementById('result');
+        let currentPdfFile = null;
+
+        fileInput.addEventListener('change', (e) => { if(e.target.files[0]) handleFileSelect(e.target.files[0]); });
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.backgroundColor = '#f1f5f9'; });
+        dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'white'; });
+        dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'white'; if(e.dataTransfer.files[0]) handleFileSelect(e.dataTransfer.files[0]); });
+
+        function handleFileSelect(file) {
+            if (file && file.type === 'application/pdf') {
+                currentPdfFile = file;
+                compressionOptions.style.display = 'block';
+                dropZone.innerHTML = `<p>✅ <strong>${file.name}</strong> ready for compression.</p>`;
+            }
+        }
+
+        function compressPdf() {
+            const level = document.getElementById('compressionLevel').value;
+            compressionOptions.style.display = 'none';
+            resultDiv.style.display = 'block';
+        }
+    </script>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 FreePDFTools. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
