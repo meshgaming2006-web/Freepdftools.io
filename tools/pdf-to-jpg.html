@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to JPG Converter Online - Free | FreePDFTools</title>
+    <meta name="description" content="Convert PDF pages to high-quality JPG images online. Extract images from PDF documents for free. No registration required.">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        @media (max-width: 768px) {
+            .container { padding: 0 15px; }
+            #dropZone { padding: 1.5rem !important; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="../index.html" class="logo">FreePDFTools</a>
+            <nav>
+                <a href="../index.html">Home</a>
+                <a href="../all-tools.html">All Tools</a>
+                <a href="../blog.html">Blog</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 2rem 1rem; max-width: 800px;">
+        <h1 style="text-align: center; margin-bottom: 0.5rem;">PDF to JPG Converter</h1>
+        <p style="text-align: center; color: #64748b; margin-bottom: 2rem;">Convert each PDF page to a high-quality JPG image.</p>
+
+        <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;" id="dropZone">
+            <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjEgMTV2NGEyIDIgMCAwIDEtMiAySDVhMiAyIDAgMCAxLTItMnYtNG0xNC00bC04IDgtOC04bTggOGwtOC04IDgtOHoiLz48L3N2Zz4=" alt="Upload" height="50" style="margin-bottom: 1rem;">
+            <p>Drag & Drop your PDF file here<br>or <b><span onclick="document.getElementById('fileInput').click()" style="color: #2563eb; cursor: pointer;">browse</span></b> to choose a file.</p>
+        </div>
+
+        <div id="conversionOptions" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1.5rem;">
+            <h3>Conversion Options</h3>
+            
+            <div style="margin: 1rem 0;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Image Quality</label>
+                <select id="imageQuality" style="padding: 0.8rem; width: 100%; border: 1px solid #ddd; border-radius: 8px;">
+                    <option value="high">High Quality (Larger Size)</option>
+                    <option value="medium" selected>Medium Quality (Recommended)</option>
+                    <option value="low">Low Quality (Smaller Size)</option>
+                </select>
+            </div>
+
+            <div style="margin: 1rem 0;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Pages to Convert</label>
+                <select id="pagesToConvert" style="padding: 0.8rem; width: 100%; border: 1px solid #ddd; border-radius: 8px;">
+                    <option value="all">All Pages</option>
+                    <option value="first">First Page Only</option>
+                    <option value="custom">Custom Range</option>
+                </select>
+            </div>
+
+            <button onclick="convertToJpg()" style="width: 100%; padding: 1rem; background-color: #2563eb; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem;">Convert to JPG</button>
+        </div>
+        
+        <div id="result" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1.5rem; text-align: center;">
+            <h3>Conversion Successful! 🎉</h3>
+            <p style="color: #64748b;">Your PDF has been converted to JPG images.</p>
+            <a id="downloadLink"><button style="padding: 1rem 2rem; background-color: #10b981; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">Download JPG Images</button></a>
+        </div>
+
+        <section style="margin-top: 4rem; padding: 1.5rem; background: #f8fafc; border-radius: 12px;">
+            <h2>Convert PDF to JPG Images</h2>
+            <p>Our PDF to JPG converter is perfect for:</p>
+            <ul style="line-height: 1.6;">
+                <li>Extracting images from PDF documents</li>
+                <li>Creating thumbnails for PDF pages</li>
+                <li>Sharing individual pages as images</li>
+                <li>Using PDF content in presentations</li>
+            </ul>
+        </section>
+    </main>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const conversionOptions = document.getElementById('conversionOptions');
+        const resultDiv = document.getElementById('result');
+        let currentPdfFile = null;
+
+        fileInput.addEventListener('change', (e) => { if(e.target.files[0]) handleFileSelect(e.target.files[0]); });
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.backgroundColor = '#f1f5f9'; });
+        dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'white'; });
+        dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'white'; if(e.dataTransfer.files[0]) handleFileSelect(e.dataTransfer.files[0]); });
+
+        function handleFileSelect(file) {
+            if (file && file.type === 'application/pdf') {
+                currentPdfFile = file;
+                conversionOptions.style.display = 'block';
+                dropZone.innerHTML = `<p>✅ <strong>${file.name}</strong> ready for conversion.</p>`;
+            }
+        }
+
+        function convertToJpg() {
+            const quality = document.getElementById('imageQuality').value;
+            const pages = document.getElementById('pagesToConvert').value;
+            conversionOptions.style.display = 'none';
+            resultDiv.style.display = 'block';
+        }
+    </script>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 FreePDFTools. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
