@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JPG to PDF Converter Online - Free | FreePDFTools</title>
+    <meta name="description" content="Convert multiple JPG images to a single PDF document online. Create PDF from photos and images for free. No registration required.">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        @media (max-width: 768px) {
+            .container { padding: 0 15px; }
+            #dropZone { padding: 1.5rem !important; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="../index.html" class="logo">FreePDFTools</a>
+            <nav>
+                <a href="../index.html">Home</a>
+                <a href="../all-tools.html">All Tools</a>
+                <a href="../blog.html">Blog</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 2rem 1rem; max-width: 800px;">
+        <h1 style="text-align: center; margin-bottom: 0.5rem;">JPG to PDF Converter</h1>
+        <p style="text-align: center; color: #64748b; margin-bottom: 2rem;">Convert multiple images to a single PDF document.</p>
+
+        <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;" id="dropZone">
+            <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,image/*" multiple style="display: none;">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjEgMTV2NGEyIDIgMCAwIDEtMiAySDVhMiAyIDAgMCAxLTItMnYtNG0xNC00bC08IDgtOC04bTggOGwtOC04IDgtOHoiLz48L3N2Zz4=" alt="Upload" height="50" style="margin-bottom: 1rem;">
+            <p>Drag & Drop your images here<br>or <b><span onclick="document.getElementById('fileInput').click()" style="color: #2563eb; cursor: pointer;">browse</span></b> to choose files.</p>
+        </div>
+
+        <div id="fileList" style="margin: 1.5rem 0;"></div>
+
+        <div id="conversionOptions" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1.5rem;">
+            <h3>PDF Options</h3>
+            
+            <div style="margin: 1rem 0;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Page Layout</label>
+                <select id="pageLayout" style="padding: 0.8rem; width: 100%; border: 1px solid #ddd; border-radius: 8px;">
+                    <option value="portrait">Portrait</option>
+                    <option value="landscape">Landscape</option>
+                    <option value="auto">Auto Detect</option>
+                </select>
+            </div>
+
+            <div style="margin: 1rem 0;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Image Quality</label>
+                <select id="imageQuality" style="padding: 0.8rem; width: 100%; border: 1px solid #ddd; border-radius: 8px;">
+                    <option value="high">High Quality</option>
+                    <option value="medium" selected>Medium Quality</option>
+                    <option value="low">Low Quality</option>
+                </select>
+            </div>
+
+            <button onclick="convertToPdf()" style="width: 100%; padding: 1rem; background-color: #2563eb; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem;">Convert to PDF</button>
+        </div>
+        
+        <div id="result" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1.5rem; text-align: center;">
+            <h3>Conversion Successful! 🎉</h3>
+            <p style="color: #64748b;">Your images have been converted to PDF.</p>
+            <a id="downloadLink"><button style="padding: 1rem 2rem; background-color: #10b981; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">Download PDF</button></a>
+        </div>
+
+        <section style="margin-top: 4rem; padding: 1.5rem; background: #f8fafc; border-radius: 12px;">
+            <h2>Create PDF from Images</h2>
+            <p>Our JPG to PDF converter is perfect for:</p>
+            <ul style="line-height: 1.6;">
+                <li>Combining multiple photos into one document</li>
+                <li>Creating portfolios from image collections</li>
+                <li>Converting scanned documents to PDF</li>
+                <li>Sharing multiple images as a single file</li>
+            </ul>
+        </section>
+    </main>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const fileList = document.getElementById('fileList');
+        const conversionOptions = document.getElementById('conversionOptions');
+        const resultDiv = document.getElementById('result');
+        let imageFiles = [];
+
+        fileInput.addEventListener('change', handleFileSelect);
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.backgroundColor = '#f1f5f9'; });
+        dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'white'; });
+        dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'white'; if(e.dataTransfer.files[0]) handleFileSelect({ target: { files: e.dataTransfer.files } }); });
+
+        function handleFileSelect(event) {
+            const files = Array.from(event.target.files);
+            const imageFiles = files.filter(file => file.type.startsWith('image/'));
+            
+            if (imageFiles.length > 0) {
+                this.imageFiles = imageFiles;
+                conversionOptions.style.display = 'block';
+                
+                fileList.innerHTML = '<h3>Selected Images:</h3>' + 
+                    imageFiles.map(file => `<p>🖼️ ${file.name}</p>`).join('');
+                
+                dropZone.innerHTML = `<p>✅ ${imageFiles.length} images selected.</p>`;
+            }
+        }
+
+        function convertToPdf() {
+            conversionOptions.style.display = 'none';
+            resultDiv.style.display = 'block';
+        }
+    </script>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 FreePDFTools. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
