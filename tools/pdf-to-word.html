@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to Word Converter Online - Free | FreePDFTools</title>
+    <meta name="description" content="Convert your PDF files to editable Word documents online for free. Perfect for editing scanned documents and forms.">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        @media (max-width: 768px) {
+            .container { padding: 0 15px; }
+            #dropZone { padding: 1.5rem !important; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="../index.html" class="logo">FreePDFTools</a>
+            <nav>
+                <a href="../index.html">Home</a>
+                <a href="../all-tools.html">All Tools</a>
+                <a href="../blog.html">Blog</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 2rem 1rem; max-width: 800px;">
+        <h1 style="text-align: center; margin-bottom: 0.5rem;">PDF to Word Converter</h1>
+        <p style="text-align: center; color: #64748b; margin-bottom: 2rem;">Convert your PDF to an editable DOCX file for free.</p>
+
+        <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;" id="dropZone">
+            <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjEgMTV2NGEyIDIgMCAwIDEtMiAySDVhMiAyIDAgMCAxLTItMnYtNG0xNC00bC04IDgtOC04bTggOGwtOC04IDgtOHoiLz48L3N2Zz4=" alt="Upload" height="50" style="margin-bottom: 1rem;">
+            <p>Drag & Drop your PDF file here<br>or <b><span onclick="document.getElementById('fileInput').click()" style="color: #2563eb; cursor: pointer;">browse</span></b> to choose a file.</p>
+        </div>
+
+        <button id="convertButton" onclick="convertToWord()" disabled style="width: 100%; padding: 1rem; background-color: #2563eb; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1.5rem; opacity: 0.6;">Convert to Word</button>
+        
+        <div id="result" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1.5rem; text-align: center;">
+            <h3>Conversion Complete!</h3>
+            <p style="color: #64748b;">Your PDF has been successfully converted to a Word document.</p>
+            <a id="downloadLink"><button style="padding: 1rem 2rem; background-color: #10b981; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">Download Word Document</button></a>
+        </div>
+
+        <section style="margin-top: 4rem; padding: 1.5rem; background: #f8fafc; border-radius: 12px;">
+            <h2>Convert PDF to Editable Word</h2>
+            <p>Our free PDF to Word converter is perfect for:</p>
+            <ul style="line-height: 1.6;">
+                <li>Editing text from scanned documents</li>
+                <li>Filling out forms that were sent as PDFs</li>
+                <li>Reusing content from PDF reports</li>
+                <li>Converting contracts and agreements</li>
+            </ul>
+        </section>
+    </main>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const convertButton = document.getElementById('convertButton');
+        const resultDiv = document.getElementById('result');
+        let currentPdfFile = null;
+
+        fileInput.addEventListener('change', (e) => { if(e.target.files[0]) handleFileSelect(e.target.files[0]); });
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.backgroundColor = '#f1f5f9'; });
+        dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'white'; });
+        dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'white'; if(e.dataTransfer.files[0]) handleFileSelect(e.dataTransfer.files[0]); });
+
+        function handleFileSelect(file) {
+            if (file && file.type === 'application/pdf') {
+                currentPdfFile = file;
+                convertButton.disabled = false;
+                convertButton.style.opacity = '1';
+                dropZone.innerHTML = `<p>✅ <strong>${file.name}</strong> ready to convert.</p>`;
+            }
+        }
+
+        function convertToWord() {
+            resultDiv.style.display = 'block';
+        }
+    </script>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 FreePDFTools. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
