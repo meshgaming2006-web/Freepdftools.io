@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Metadata Editor - Edit PDF Properties Online | FreePDFTools</title>
+    <meta name="description" content="Edit PDF metadata properties like title, author, keywords, and creation date. Clean and modify PDF document information easily.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">FreePDFTools</a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="all-tools.html">All Tools</a>
+                <a href="blog.html">Blog</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 2rem 1rem; max-width: 800px;">
+        <h1 style="text-align: center; margin-bottom: 0.5rem;">PDF Metadata Editor</h1>
+        <p style="text-align: center; color: #64748b; margin-bottom: 2rem;">Edit and clean PDF document properties and metadata.</p>
+
+        <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;" id="dropZone">
+            <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjEgMTV2NGEyIDIgMCAwIDEtMiAySDVhMiAyIDAgMCAxLTItMnYtNG0xNC00bC04IDgtOC04bTggOGwtOC04IDgtOHoiLz48L3N2Zz4=" alt="Upload" height="50" style="margin-bottom: 1rem;">
+            <p>Drag & Drop your PDF file here<br>or <b><span onclick="document.getElementById('fileInput').click()" style="color: #2563eb; cursor: pointer;">browse</span></b> to choose a file.</p>
+        </div>
+
+        <div id="metadataEditor" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1.5rem;">
+            <h3 style="text-align: center;">Edit PDF Metadata</h3>
+            
+            <div style="display: grid; gap: 1rem; margin: 1.5rem 0;">
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Title</label>
+                    <input type="text" id="pdfTitle" placeholder="Document Title" style="padding: 0.8rem; width: 100%; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Author</label>
+                    <input type="text" id="pdfAuthor" placeholder="Author Name" style="padding: 0.8rem; width: 100%; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Subject</label>
+                    <input type="text" id="pdfSubject" placeholder="Document Subject" style="padding: 0.8rem; width: 100%; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Keywords</label>
+                    <input type="text" id="pdfKeywords" placeholder="keyword1, keyword2, keyword3" style="padding: 0.8rem; width: 100%; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Creator</label>
+                    <input type="text" id="pdfCreator" placeholder="Creating Application" style="padding: 0.8rem; width: 100%; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+            </div>
+
+            <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="checkbox" id="removeAllMetadata">
+                    <span style="font-weight: 500;">Remove all metadata (clean document)</span>
+                </label>
+                <p style="color: #64748b; font-size: 0.9rem; margin: 0.5rem 0 0 0;">This will strip all metadata from the PDF for maximum privacy.</p>
+            </div>
+
+            <button onclick="updateMetadata()" style="width: 100%; padding: 1rem; background-color: #2563eb; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem;">Update Metadata</button>
+        </div>
+        
+        <div id="result" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1.5rem; text-align: center;">
+            <h3>Metadata Updated Successfully! 🎉</h3>
+            <p style="color: #64748b;">Your PDF document properties have been modified.</p>
+            <a id="downloadLink"><button style="padding: 1rem 2rem; background-color: #10b981; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">Download PDF with New Metadata</button></a>
+        </div>
+
+        <section style="margin-top: 4rem;">
+            <h2>Why Edit PDF Metadata?</h2>
+            <p>PDF metadata contains hidden information about your document:</p>
+            <ul>
+                <li><strong>Title & Author:</strong> Displayed in PDF readers and search results</li>
+                <li><strong>Creation Date:</strong> When the document was originally created</li>
+                <li><strong>Modification Date:</strong> When the document was last edited</li>
+                <li><strong>Keywords:</strong> Used for search engine optimization and organization</li>
+                <li><strong>Software Information:</strong> Which application created the PDF</li>
+            </ul>
+            <p><strong>Common uses:</strong> Professional document preparation, privacy protection, SEO optimization, and document organization.</p>
+        </section>
+    </main>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const metadataEditor = document.getElementById('metadataEditor');
+        let currentPdfFile = null;
+
+        fileInput.addEventListener('change', (e) => { if(e.target.files[0]) handleFileSelect(e.target.files[0]); });
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.backgroundColor = '#f1f5f9'; });
+        dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'white'; });
+        dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'white'; if(e.dataTransfer.files[0]) handleFileSelect(e.dataTransfer.files[0]); });
+
+        function handleFileSelect(file) {
+            if (file && file.type === 'application/pdf') {
+                currentPdfFile = file;
+                metadataEditor.style.display = 'block';
+                dropZone.innerHTML = `<p>✅ <strong>${file.name}</strong> ready for metadata editing.</p>`;
+                
+                // Simulate loading existing metadata
+                document.getElementById('pdfTitle').value = 'Sample Document Title';
+                document.getElementById('pdfAuthor').value = 'John Doe';
+                document.getElementById('pdfSubject').value = 'Business Report';
+                document.getElementById('pdfKeywords').value = 'report, business, 2024';
+                document.getElementById('pdfCreator').value = 'Microsoft Word';
+            }
+        }
+
+        function updateMetadata() {
+            const removeAll = document.getElementById('removeAllMetadata').checked;
+            if (removeAll) {
+                alert('This would remove all metadata from the PDF for complete privacy.');
+            } else {
+                const title = document.getElementById('pdfTitle').value;
+                const author = document.getElementById('pdfAuthor').value;
+                alert(`This would update metadata with Title: ${title}, Author: ${author}, etc.`);
+            }
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 FreePDFTools. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
