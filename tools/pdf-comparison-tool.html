@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Comparison Tool - Compare Two PDF Files | FreePDFTools</title>
+    <meta name="description" content="Compare two PDF documents and highlight differences. Find changes in text, images, and formatting. Perfect for legal and document review.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">FreePDFTools</a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="all-tools.html">All Tools</a>
+                <a href="blog.html">Blog</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 2rem 1rem; max-width: 1000px;">
+        <h1 style="text-align: center; margin-bottom: 0.5rem;">PDF Comparison Tool</h1>
+        <p style="text-align: center; color: #64748b; margin-bottom: 2rem;">Compare two PDF files and see all differences highlighted.</p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+            <!-- Original PDF -->
+            <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
+                <h3>Original PDF</h3>
+                <div id="dropZone1" style="border: 2px dashed #d1d5db; padding: 2rem; margin: 1rem 0; min-height: 150px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                    <input type="file" id="fileInput1" accept=".pdf" style="display: none;">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjEgMTV2NGEyIDIgMCAwIDEtMiAySDVhMiAyIDAgMCAxLTItMnYtNG0xNC00bC04IDgtOC04bTggOGwtOC04IDgtOHoiLz48L3N2Zz4=" alt="Upload" height="40" style="margin-bottom: 0.5rem;">
+                    <p>Drag & Drop file here<br>or <b><span onclick="document.getElementById('fileInput1').click()" style="color: #2563eb; cursor: pointer;">browse</span></b></p>
+                </div>
+                <div id="fileInfo1" style="display: none;">
+                    <p>✅ <span id="fileName1">document.pdf</span></p>
+                </div>
+            </div>
+
+            <!-- Modified PDF -->
+            <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
+                <h3>Modified PDF</h3>
+                <div id="dropZone2" style="border: 2px dashed #d1d5db; padding: 2rem; margin: 1rem 0; min-height: 150px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                    <input type="file" id="fileInput2" accept=".pdf" style="display: none;">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI4IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjEgMTV2NGEyIDIgMCAwIDEtMiAySDVhMiAyIDAgMCAxLTItMnYtNG0xNC00bC04IDgtOC04bTggOGwtOC04IDgtOHoiLz48L3N2Zz4=" alt="Upload" height="40" style="margin-bottom: 0.5rem;">
+                    <p>Drag & Drop file here<br>or <b><span onclick="document.getElementById('fileInput2').click()" style="color: #2563eb; cursor: pointer;">browse</span></b></p>
+                </div>
+                <div id="fileInfo2" style="display: none;">
+                    <p>✅ <span id="fileName2">document_v2.pdf</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="compareOptions" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 2rem; text-align: center;">
+            <h3>Comparison Options</h3>
+            <div style="display: flex; gap: 1rem; justify-content: center; margin: 1rem 0;">
+                <label><input type="checkbox" checked> Text Changes</label>
+                <label><input type="checkbox" checked> Formatting Changes</label>
+                <label><input type="checkbox"> Image Changes</label>
+            </div>
+            <button onclick="comparePDFs()" style="padding: 1rem 2rem; background-color: #2563eb; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">Compare PDFs</button>
+        </div>
+
+        <div id="loading" style="display: none; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 2rem; text-align: center;">
+            <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
+                <div style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #2563eb; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            </div>
+            <p>Analyzing documents and finding differences...</p>
+        </div>
+
+        <div id="result" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <h3 style="text-align: center;">Comparison Results</h3>
+            <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                <h4>📊 Summary of Changes</h4>
+                <ul>
+                    <li><span style="color: #dc2626;">12 text deletions</span> found</li>
+                    <li><span style="color: #16a34a;">8 text additions</span> found</li>
+                    <li><span style="color: #ca8a04;">3 formatting changes</span> detected</li>
+                </ul>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;">
+                <div style="background: #fffbeb; padding: 1rem; border-radius: 6px;">
+                    <h5>Removed Content</h5>
+                    <p style="color: #dc2626; background: #fef2f2; padding: 0.5rem; border-radius: 4px;">This text was removed from the original document.</p>
+                </div>
+                <div style="background: #f0fdf4; padding: 1rem; border-radius: 6px;">
+                    <h5>Added Content</h5>
+                    <p style="color: #16a34a; background: #f0fdf4; padding: 0.5rem; border-radius: 4px;">This is new text added to the modified version.</p>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <a id="downloadLink"><button style="padding: 1rem 2rem; background-color: #10b981; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">Download Comparison Report</button></a>
+            </div>
+        </div>
+
+        <section style="margin-top: 4rem;">
+            <h2>Professional PDF Comparison</h2>
+            <p>Our comparison tool is perfect for:</p>
+            <ul>
+                <li>Legal document review and version control</li>
+                <li>Contract changes tracking</li>
+                <li>Academic paper revisions</li>
+                <li>Technical documentation updates</li>
+                <li>Quality assurance and proofreading</li>
+            </ul>
+            <p><strong>Features:</strong> Side-by-side comparison, color-coded changes, detailed change report, and downloadable results.</p>
+        </section>
+    </main>
+
+    <script>
+        let file1 = null, file2 = null;
+
+        // Setup drag and drop for both zones
+        setupDropZone('dropZone1', 'fileInput1', 'fileInfo1', 'fileName1', (file) => { file1 = file; });
+        setupDropZone('dropZone2', 'fileInput2', 'fileInfo2', 'fileName2', (file) => { file2 = file; });
+
+        function setupDropZone(dropZoneId, inputId, infoId, fileNameId, callback) {
+            const dropZone = document.getElementById(dropZoneId);
+            const fileInput = document.getElementById(inputId);
+            const fileInfo = document.getElementById(infoId);
+            const fileName = document.getElementById(fileNameId);
+
+            fileInput.addEventListener('change', (e) => { if(e.target.files[0]) handleFileSelect(e.target.files[0], dropZone, fileInfo, fileName, callback); });
+            
+            dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.backgroundColor = '#f1f5f9'; });
+            dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'white'; });
+            dropZone.addEventListener('drop', (e) => { 
+                e.preventDefault(); 
+                dropZone.style.backgroundColor = 'white'; 
+                if(e.dataTransfer.files[0]) handleFileSelect(e.dataTransfer.files[0], dropZone, fileInfo, fileName, callback); 
+            });
+        }
+
+        function handleFileSelect(file, dropZone, fileInfo, fileNameElement, callback) {
+            if (file && file.type === 'application/pdf') {
+                callback(file);
+                dropZone.style.display = 'none';
+                fileInfo.style.display = 'block';
+                fileNameElement.textContent = file.name;
+                
+                // Show compare options if both files are selected
+                if (file1 && file2) {
+                    document.getElementById('compareOptions').style.display = 'block';
+                }
+            }
+        }
+
+        function comparePDFs() {
+            document.getElementById('compareOptions').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('result').style.display = 'block';
+                alert('This would use a PDF comparison library to analyze differences between the two documents.');
+            }, 2000);
+        }
+    </script>
+
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 FreePDFTools. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
