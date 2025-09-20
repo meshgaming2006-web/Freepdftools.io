@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotate PDF Online - Free PDF Page Rotation | FreePDFTools</title>
+    <meta name="description" content="Rotate PDF pages online. Fix upside-down or sideways pages in your PDF document. Free tool with multiple rotation options.">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">FreePDFTools</a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="all-tools.html">All Tools</a>
+                <a href="blog.html">Blog</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 2rem 1rem; max-width: 800px;">
+        <h1 style="text-align: center; margin-bottom: 0.5rem;">Rotate PDF</h1>
+        <p style="text-align: center; color: #64748b; margin-bottom: 2rem;">Fix upside-down or sideways pages in your PDF document.</p>
+
+        <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;" id="dropZone">
+            <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjEgMTV2NGEyIDIgMCAwIDEtMiAySDVhMiAyIDAgMCAxLTItMnYtNG0xNC00bC04IDgtOC04bTggOGwtOC04IDgtOHoiLz48L3N2Zz4=" alt="Upload" height="50" style="margin-bottom: 1rem;">
+            <p>Drag & Drop your PDF file here<br>or <b><span onclick="document.getElementById('fileInput').click()" style="color: #2563eb; cursor: pointer;">browse</span></b> to choose a file.</p>
+        </div>
+
+        <div id="rotationOptions" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1.5rem;">
+            <h3>Rotation Options</h3>
+            <div style="display: flex; gap: 1rem; justify-content: center; margin: 1rem 0;">
+                <button onclick="rotateAll(90)" style="padding: 0.8rem 1.5rem; background: #dbeafe; border: none; border-radius: 8px; cursor: pointer;">Rotate All 90°</button>
+                <button onclick="rotateAll(180)" style="padding: 0.8rem 1.5rem; background: #dbeafe; border: none; border-radius: 8px; cursor: pointer;">Rotate All 180°</button>
+                <button onclick="rotateAll(270)" style="padding: 0.8rem 1.5rem; background: #dbeafe; border: none; border-radius: 8px; cursor: pointer;">Rotate All 270°</button>
+            </div>
+            <p style="text-align: center; color: #64748b;">Or select specific pages to rotate in the advanced editor</p>
+            <button onclick="advancedRotate()" style="width: 100%; padding: 1rem; background-color: #2563eb; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem;">Advanced Rotation</button>
+        </div>
+        
+        <div id="result" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1.5rem; text-align: center;">
+            <h3>PDF Rotated Successfully! 🎉</h3>
+            <a id="downloadLink"><button style="padding: 1rem 2rem; background-color: #10b981; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">Download Rotated PDF</button></a>
+        </div>
+
+        <section style="margin-top: 4rem;">
+            <h2>How to Rotate PDF Pages</h2>
+            <ol>
+                <li>Upload your PDF using the tool above</li>
+                <li>Choose to rotate all pages or use advanced options for specific pages</li>
+                <li>Select your desired rotation angle (90°, 180°, or 270°)</li>
+                <li>Download your corrected PDF with properly oriented pages</li>
+            </ol>
+            <p>Essential for fixing scanned documents that were loaded upside down or sideways.</p>
+        </section>
+    </main>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const rotationOptions = document.getElementById('rotationOptions');
+        const resultDiv = document.getElementById('result');
+        let currentPdfFile = null;
+
+        fileInput.addEventListener('change', (e) => { if(e.target.files[0]) handleFileSelect(e.target.files[0]); });
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.backgroundColor = '#f1f5f9'; });
+        dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'white'; });
+        dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'white'; if(e.dataTransfer.files[0]) handleFileSelect(e.dataTransfer.files[0]); });
+
+        function handleFileSelect(file) {
+            if (file && file.type === 'application/pdf') {
+                currentPdfFile = file;
+                rotationOptions.style.display = 'block';
+                dropZone.innerHTML = `<p>✅ <strong>${file.name}</strong> ready to rotate.</p>`;
+            }
+        }
+
+        function rotateAll(degrees) {
+            alert(`This will use pdf-lib to rotate all pages by ${degrees} degrees, then generate a download link.`);
+        }
+
+        function advancedRotate() {
+            alert("Advanced interface would appear here allowing per-page rotation with previews.");
+        }
+    </script>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 FreePDFTools. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
