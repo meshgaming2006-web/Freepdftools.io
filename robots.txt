@@ -3,6 +3,7 @@ Allow: /
 Disallow: /private/
 Disallow: /temp/
 Disallow: /admin/
+
 Crawl-delay: 1
 
 Sitemap: https://freepdftools.vercel.app/sitemap.xml
