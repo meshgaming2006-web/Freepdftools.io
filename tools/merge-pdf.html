@@ -1,90 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Merge PDF Online - Free Tool to Combine Files</title>
-<script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
-<style>
-    body { font-family: Arial, sans-serif; background: #f8fafc; padding: 2rem; }
-    #dropZone { padding: 2rem; border: 2px dashed #2563eb; border-radius: 12px; text-align: center; background: #fff; cursor: pointer; }
-    #fileList { margin: 1rem 0; }
-    button { padding: 1rem 2rem; border: none; border-radius: 8px; cursor: pointer; background: #2563eb; color: white; font-weight: bold; }
-    #result { display: none; margin-top: 1rem; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge PDF Online - Free Tool to Combine Files | FreePDFTools</title>
+    <meta name="description" content="Combine multiple PDFs into one document for free. No watermarks, no registration. Our online PDF merger is fast, secure, and easy to use.">
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://unpkg.com/downloadjs@1.4.7"></script>
+    <style>
+        .file-item {
+            background: #f8fafc;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #10b981;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
 </head>
 <body>
+    <header>
+        <div class="container header-container">
+            <a href="../index.html" class="logo">FreePDFTools</a>
+            <nav>
+                <a href="../index.html">Home</a>
+                <a href="../all-tools.html">All Tools</a>
+                <a href="../blog.html">Blog</a>
+            </nav>
+        </div>
+    </header>
 
-<h1>Merge PDF</h1>
-<div id="dropZone">Drag & Drop PDFs here or click to browse</div>
-<input type="file" id="fileInput" accept=".pdf" multiple style="display:none;">
-<div id="fileList"></div>
-<button id="mergeButton" disabled>Merge PDFs</button>
-<div id="result">
-    <a id="downloadLink"><button>Download Merged PDF</button></a>
-</div>
+    <main class="container" style="padding: 2rem 1rem; max-width: 800px;">
+        <h1 style="text-align: center; margin-bottom: 0.5rem;">Merge PDF</h1>
+        <p style="text-align: center; color: #64748b; margin-bottom: 2rem;">Combine multiple PDFs into a single document</p>
 
-<script>
-const dropZone = document.getElementById('dropZone');
-const fileInput = document.getElementById('fileInput');
-const fileList = document.getElementById('fileList');
-const mergeButton = document.getElementById('mergeButton');
-const resultDiv = document.getElementById('result');
-const downloadLink = document.getElementById('downloadLink');
+        <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;" id="dropZone">
+            <input type="file" id="fileInput" accept=".pdf" multiple style="display: none;">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjEgMTV2NGEyIDIgMCAwIDEtMiAySDVhMiAyIDAgMCAxLTItMnYtNG0xNC00bC04IDgtOC04bTggOGwtOC04IDgtOHoiLz48L3N2Zz4=" alt="Upload" height="50" style="margin-bottom: 1rem;">
+            <p>Click to select PDF files or drag & drop</p>
+            <button onclick="document.getElementById('fileInput').click()" style="padding: 1rem 2rem; background: #2563eb; color: white; border: none; border-radius: 8px; margin-top: 1rem; cursor: pointer;">Select PDF Files</button>
+        </div>
 
-let files = [];
+        <div id="fileList" style="margin: 1.5rem 0;"></div>
 
-// Drag & drop
-dropZone.addEventListener('click', () => fileInput.click());
-dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.background = '#e0f2fe'; });
-dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.style.background = '#fff'; });
-dropZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropZone.style.background = '#fff';
-    handleFiles(e.dataTransfer.files);
-});
+        <div class="progress-bar" id="progressBar" style="display: none;">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <button id="mergeButton" onclick="mergePdfs()" disabled style="width: 100%; padding: 1rem; background-color: #2563eb; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; opacity: 0.6;">Merge PDFs</button>
+        
+        <div id="result" style="display: none; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1.5rem; text-align: center;">
+            <h3 style="color: #10b981;">Merge Successful! 🎉</h3>
+            <p style="color: #64748b; margin: 1rem 0;">Your PDF files have been combined successfully.</p>
+            <button id="downloadButton" style="padding: 1rem 2rem; background-color: #10b981; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">Download Merged PDF</button>
+        </div>
+    </main>
 
-fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+    <script>
+        let selectedFiles = [];
 
-function handleFiles(selectedFiles) {
-    files = Array.from(selectedFiles);
-    if (files.length > 0) {
-        mergeButton.disabled = false;
-        fileList.innerHTML = '<h3>Selected Files:</h3>' + files.map(f => `<p>📄 ${f.name}</p>`).join('');
-    }
-}
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            selectedFiles = Array.from(e.target.files);
+            updateFileList();
+        });
 
-mergeButton.addEventListener('click', async () => {
-    if (files.length < 2) { alert('Select at least 2 PDFs'); return; }
-    mergeButton.disabled = true;
-    mergeButton.textContent = 'Merging...';
+        // Drag and drop functionality
+        const dropZone = document.getElementById('dropZone');
+        ['dragover', 'dragenter'].forEach(event => {
+            dropZone.addEventListener(event, (e) => {
+                e.preventDefault();
+                dropZone.style.background = '#f0f9ff';
+            });
+        });
 
-    try {
-        const mergedPdf = await PDFLib.PDFDocument.create();
-        for (const file of files) {
-            const arrayBuffer = await file.arrayBuffer();
-            const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
-            const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-            copiedPages.forEach(page => mergedPdf.addPage(page));
+        ['dragleave', 'dragend'].forEach(event => {
+            dropZone.addEventListener(event, (e) => {
+                e.preventDefault();
+                dropZone.style.background = 'white';
+            });
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.background = 'white';
+            selectedFiles = Array.from(e.dataTransfer.files).filter(file => file.type === 'application/pdf');
+            updateFileList();
+        });
+
+        function updateFileList() {
+            const fileList = document.getElementById('fileList');
+            const mergeButton = document.getElementById('mergeButton');
+
+            if (selectedFiles.length > 0) {
+                fileList.innerHTML = '<h3>Selected Files:</h3>' + 
+                    selectedFiles.map((file, index) => `
+                        <div class="file-item">
+                            <span>📄</span>
+                            <div style="flex: 1;">
+                                <strong>${file.name}</strong>
+                                <div style="font-size: 0.8rem; color: #64748b;">
+                                    ${(file.size / 1024 / 1024).toFixed(2)} MB
+                                </div>
+                            </div>
+                            <button onclick="removeFile(${index})" style="background: #ef4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Remove</button>
+                        </div>
+                    `).join('');
+
+                mergeButton.disabled = false;
+                mergeButton.style.opacity = '1';
+            } else {
+                fileList.innerHTML = '';
+                mergeButton.disabled = true;
+                mergeButton.style.opacity = '0.6';
+            }
         }
 
-        const mergedPdfBytes = await mergedPdf.save();
-        const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            updateFileList();
+        }
 
-        downloadLink.href = url;
-        downloadLink.download = 'merged.pdf';
-        resultDiv.style.display = 'block';
-        mergeButton.textContent = 'Merge PDFs';
-        mergeButton.disabled = false;
-    } catch (err) {
-        console.error(err);
-        alert('Error merging PDFs');
-        mergeButton.textContent = 'Merge PDFs';
-        mergeButton.disabled = false;
-    }
-});
-</script>
+        async function mergePdfs() {
+            if (selectedFiles.length === 0) return;
 
+            const mergeButton = document.getElementById('mergeButton');
+            const progressBar = document.getElementById('progressBar');
+            const progressFill = document.getElementById('progressFill');
+
+            mergeButton.disabled = true;
+            mergeButton.textContent = 'Merging...';
+            progressBar.style.display = 'block';
+
+            try {
+                const { PDFDocument } = PDFLib;
+                const mergedPdf = await PDFDocument.create();
+
+                for (let i = 0; i < selectedFiles.length; i++) {
+                    const file = selectedFiles[i];
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdfDoc = await PDFDocument.load(arrayBuffer);
+                    const pages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
+                    pages.forEach(page => mergedPdf.addPage(page));
+
+                    // Update progress
+                    const progress = ((i + 1) / selectedFiles.length) * 100;
+                    progressFill.style.width = progress + '%';
+                }
+
+                const mergedPdfBytes = await mergedPdf.save();
+                const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+
+                // Show result
+                document.getElementById('result').style.display = 'block';
+                mergeButton.textContent = 'Merge PDFs';
+                mergeButton.disabled = false;
+                progressBar.style.display = 'none';
+
+                // Setup download
+                document.getElementById('downloadButton').onclick = function() {
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'merged-document.pdf';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                };
+
+            } catch (error) {
+                console.error('Error merging PDFs:', error);
+                alert('Error merging PDFs. Please try again with valid PDF files.');
+                mergeButton.textContent = 'Merge PDFs';
+                mergeButton.disabled = false;
+                progressBar.style.display = 'none';
+            }
+        }
+    </script>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 FreePDFTools. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
