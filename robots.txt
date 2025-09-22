@@ -1,8 +1,38 @@
 User-agent: *
 Allow: /
 Disallow: /private/
-Disallow: /tmp/
-
-Sitemap: https://your-username.github.io/free-pdf-tools/sitemap.xml
-
+Disallow: /temp/
+Disallow: /admin/
 Crawl-delay: 1
+
+Sitemap: https://freepdftools.vercel.app/sitemap.xml
+Sitemap: https://freepdftools.vercel.app/sitemap-index.xml
+
+# Googlebot specific
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0.5
+
+# Bingbot specific  
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Social Media Bots
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+# Image Crawlers
+User-agent: Googlebot-Image
+Allow: /
+
+# Video Crawlers
+User-agent: Googlebot-Video
+Allow: /
+
+# Ads Crawlers
+User-agent: AdsBot-Google
+Allow: /
